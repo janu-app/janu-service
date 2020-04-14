@@ -25,6 +25,7 @@ exports.up = function(knex) {
     })
     .createTable('teachers', function (table) {
         table.string('person_id', 36).notNullable()
+        table.string('code', 36)
         table.primary(['person_id'])
         table.foreign('person_id').references('id').inTable('people')
     })
@@ -88,7 +89,7 @@ exports.up = function(knex) {
 };
 
 exports.down = function(knex) {
-  knex.schema.dropTable('student_classroom_assignment')
+  return knex.schema.dropTable('student_classroom_assignment')
   .dropTable('students')
   .dropTable('classrooms')
   .dropTable('grade_opened_areas')

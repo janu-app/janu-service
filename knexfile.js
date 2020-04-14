@@ -21,6 +21,9 @@ module.exports = {
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME
     },
+    seeds: {
+      directory: './seeds/dev'
+    },
     pool: {
       min: 2,
       max: 10

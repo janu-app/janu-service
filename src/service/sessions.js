@@ -2,11 +2,12 @@ const { v4: uuid } = require('uuid')
 
 module.exports = (knex) => {
   return {
-    async list({ classroomId }) {
+    async list({ teacherId, classroomId }) {
       const results = await knex.select()
       .from('sessions')
       .where({
-        classroom_id: classroomId
+        classroom_id: classroomId,
+        teacher_id: teacherId
       })
       return { results }
     },
