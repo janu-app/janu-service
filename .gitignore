@@ -1,0 +1,6 @@
+.env
+node_modules
+dev.sqlite3
+serviceAccountKey.json
+
+seeds
