@@ -7,7 +7,7 @@ module.exports = ({ app, sessionsService, userService }) => {
   router.get('/', async (req, res, next) => {
     try {
       const me = await userService.me(req)
-      res.status(200).json(await sessionsService.list(Object.assign({ teacher_id: me.person_id }, req.query)))
+      res.status(200).json(await sessionsService.list(Object.assign({ teacherId: me.person_id }, req.query)))
     } catch(e) {
       next(e)
     }
