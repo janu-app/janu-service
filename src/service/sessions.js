@@ -27,6 +27,7 @@ module.exports = (knex) => {
       const session = await knex.select({
         name: 'sessions.name',
         number: 'sessions.number',
+        week_number: 'sessions.week_number',
         competences: 'sessions.competences',
         grade_name: 'grades.name',
         area_id: 'sessions.area_id'
