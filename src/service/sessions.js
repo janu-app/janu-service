@@ -1,7 +1,31 @@
 const { v4: uuid } = require('uuid')
+const { reportTemplateQuery } = require('./constants/SessionQuerys')
+
+const { exportXlsx } = require('./ExcelExporter')
 
 module.exports = (knex) => {
   return {
+    async queryReporteDirectivosData ({ teacherId, week_number, state }) {
+      const query = reportTemplateQuery
+        + ' where 1=1 '
+        + (teacherId ? `and sessions.teacher_id = '${teacherId}'` : '')
+        + (week_number ? `and sessions.week_number = '${week_number}'` : '')
+        + (state ? `and sessions.state = '${state}'` : '')
+        + ' order by sessions.week_number, people.lastname, people.lastname2, people.name, grades.order, areas.name, sessions.modified_at'
+      const { rows: results} = await knex.raw(query)
+      return { results }
+    },
+
+    async exportReporteDirectivosData ({ sout, ...query }) {
+      //const { rows: results} = await knex.raw(reportTemplateQuery)
+      const response = await this.queryReporteDirectivosData(query)
+      return exportXlsx({
+        template: './ficha_directivos_template.xlsx',
+        data: response.results.map((el, i) => ({i: i+1, ...el})),
+        sout
+      })
+    },
+
     async list({ teacherId, classroomId }) {
       const results = await knex.select()
       .from('sessions')
@@ -14,13 +38,18 @@ module.exports = (knex) => {
 
     async create(session) {
       const sessionId = uuid()
-      await knex('sessions').insert(Object.assign({ id: sessionId }, session))
+      await knex('sessions').insert(Object.assign({ id: sessionId, state: 'ACTIVE' }, session))
       const students = await knex.select('student_id').from('student_classroom_assignment').where({
         classroom_id: session.classroom_id
       })
       await knex('session_student')
       .insert(students.map(studentId => ({ id: uuid(), session_id: sessionId, student_id: studentId.student_id })))
       return { sessionId }
+    },
+
+    async update({ sessionId, ...session}) {
+      await knex('sessions').where({ id: sessionId }).update(Object.assign({}, session, {modified_at: knex.fn.now()}))
+      return session
     },
 
     async loadById({ sessionId }) {
