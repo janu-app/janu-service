@@ -20,7 +20,7 @@ module.exports = (knex) => {
       //const { rows: results} = await knex.raw(reportTemplateQuery)
       const response = await this.queryReporteDirectivosData(query)
       return exportXlsx({
-        template: './ficha_directivos_template.xlsx',
+        template: 'ficha_directivos_template.xlsx',
         data: response.results.map((el, i) => ({i: i+1, ...el})),
         sout
       })

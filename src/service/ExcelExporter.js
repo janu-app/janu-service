@@ -2,7 +2,7 @@ const exceljs = require('exceljs')
 
 async function exportXlsx({ template, data, sout }) {
   var workbook = new exceljs.Workbook();
-  await workbook.xlsx.readFile(`${__dirname}\\${template}`);
+  await workbook.xlsx.readFile(`${__dirname}/${template}`);
   const worksheet = workbook.getWorksheet('Table 1')
   worksheet.columns = [
     { key: 'i', width: 4},
