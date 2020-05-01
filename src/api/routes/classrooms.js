@@ -12,5 +12,9 @@ module.exports = ({ app, classroomService }) => {
     res.status(200).json(await classroomService.students(req.params.id))
   })
 
+  router.post('/:id/students', async (req, res, next) => {
+    res.status(200).json(await classroomService.assignStudent(req.body))
+  })
+
   app.use('/classrooms', auth, router)
 }

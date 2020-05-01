@@ -1,3 +1,4 @@
+const { v4: uuid } = require('uuid')
 
 module.exports = (knex) => {
     return {
@@ -37,6 +38,41 @@ module.exports = (knex) => {
               classroom_id: classroomId
           })
           return { results }
+      },
+
+      async assignStudent({ classroomId, student, person }) {
+        // check if student has been assigned to the class
+        
+        let { person_id } = student
+
+        if (!person_id) {
+          const existingPerson = await knex.select().from('people').first().where({ national_id: person.national_id })
+          if (!existingPerson) {
+            person_id = uuid()
+            await knex('people').insert({
+              id: person_id,
+              ...person
+            })
+          } else {
+            person_id = existingPerson.id
+          }
+          await knex('students').insert({ person_id })
+        }
+
+        const existingAssignment = await knex.select().from('student_classroom_assignment').first().where({
+          classroom_id: classroomId,
+          student_id: person_id
+        })
+        let { id } = existingAssignment
+        if (!id) {
+          id = uuid()
+          await knex('student_classroom_assignment').insert({
+            id,
+            classroom_id: classroomId,
+            student_id: person_id
+          })
+        }
+        return { id, classroom_id }
       }
     }
   }
