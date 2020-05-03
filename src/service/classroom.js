@@ -37,13 +37,14 @@ module.exports = (knex) => {
           .where({
               classroom_id: classroomId
           })
+          .orderBy(['lastname', 'lastname2', 'name'])
           return { results }
       },
 
       async assignStudent({ classroomId, student, person }) {
         // check if student has been assigned to the class
         
-        let { person_id } = student
+        let { person_id } = student ? student : {}
 
         if (!person_id) {
           const existingPerson = await knex.select().from('people').first().where({ national_id: person.national_id })
@@ -56,14 +57,18 @@ module.exports = (knex) => {
           } else {
             person_id = existingPerson.id
           }
-          await knex('students').insert({ person_id })
+          // TODO: Check for student id
+          const existingStudents = await knex.select().from('students').where({ person_id })
+          if (!existingStudents.length) {
+            await knex('students').insert({ person_id })
+          }
         }
 
         const existingAssignment = await knex.select().from('student_classroom_assignment').first().where({
           classroom_id: classroomId,
           student_id: person_id
         })
-        let { id } = existingAssignment
+        let { id } = existingAssignment ? existingAssignment : {}
         if (!id) {
           id = uuid()
           await knex('student_classroom_assignment').insert({
@@ -72,7 +77,7 @@ module.exports = (knex) => {
             student_id: person_id
           })
         }
-        return { id, classroom_id }
+        return { id, classroom_id: classroomId }
       }
     }
   }
