@@ -7,12 +7,15 @@ const sessions = require('./routes/sessions')
 module.exports = ({ userService, 
     classroomService,
     areaService,
-    sessionsService }) => {
+    sessionsService,
+    studentParticipationReport }) => {
     const app = express.Router()
     me({ app, userService })
     classrooms({ app, classroomService })
     areas({ app, areaService })
-    sessions({ app, sessionsService, userService })
+    
+    sessions.api({ app, sessionsService, userService })
+    sessions.reports({ app, studentParticipationReport })
     
     return app
 }
