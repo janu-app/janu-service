@@ -1,6 +1,5 @@
 const express = require('express')
-const auth = require('../middleware/auth')
-const { handle } = require('../middleware/errors')
+const auth = require('../../middleware/auth')
 
 module.exports = ({ app, sessionsService, userService }) => {
   const router = express.Router()
