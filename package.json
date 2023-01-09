@@ -19,7 +19,7 @@
     "dotenv": "^8.2.0",
     "exceljs": "^3.8.2",
     "express": "^4.17.1",
-    "firebase-admin": "^8.10.0",
+    "firebase-admin": "^11.4.1",
     "knex": "^0.20.13",
     "pg": "^8.0.2",
     "pino-http": "^5.1.0",
